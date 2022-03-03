@@ -40,7 +40,6 @@ function build {
   set +u
 
   export PATH="$HOME/.pyenv/bin:$PATH"
-  export TERM=dumb
   export LC_ALL=en_US.UTF-8
   update_pyenv
   eval "$(pyenv init -)"
@@ -65,7 +64,6 @@ function build_it {
   set +u
 
   export PATH="$HOME/.pyenv/bin:$PATH"
-  export TERM=dumb
   export LC_ALL=en_US.UTF-8
   export BENCHMARK_HOME="$GITHUB_WORKSPACE"
   export JAVA_PATH="/opt/hostedtoolcache/Java_Adopt_jdk"
@@ -80,7 +78,7 @@ function build_it {
   # ensure pyenv shims are added to PATH, see https://github.com/pyenv/pyenv/issues/1906
   eval "$(pyenv init --path)"
   eval "$(pyenv virtualenv-init -)"
-  pip install opensearch-benchmark
+  pip3 install opensearch-benchmark
   docker pull datadog/squid:latest
 
   make prereq
