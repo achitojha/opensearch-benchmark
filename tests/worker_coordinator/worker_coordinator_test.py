@@ -31,7 +31,7 @@ import unittest.mock as mock
 from datetime import datetime
 from unittest import TestCase
 
-import elasticsearch
+import opensearchpy
 import pytest
 
 from osbenchmark import metrics, workload, exceptions, config
@@ -1557,7 +1557,7 @@ class AsyncExecutorTests(TestCase):
                 opensearch = None
                 params = None
                 # ES client uses pseudo-status "N/A" in this case...
-                runner = mock.Mock(side_effect=as_future(exception=elasticsearch.ConnectionError("N/A", "no route to host", None)))
+                runner = mock.Mock(side_effect=as_future(exception=opensearchpy.ConnectionError("N/A", "no route to host", None)))
 
                 with self.assertRaises(exceptions.BenchmarkAssertionError) as ctx:
                     await worker_coordinator.execute_single(self.context_managed(runner), opensearch, params, on_error=on_error)
@@ -1570,7 +1570,7 @@ class AsyncExecutorTests(TestCase):
         opensearch = None
         params = None
         runner = mock.Mock(side_effect=
-                           as_future(exception=elasticsearch.NotFoundError(404, "not found", "the requested document could not be found")))
+                           as_future(exception=opensearchpy.NotFoundError(404, "not found", "the requested document could not be found")))
 
         with self.assertRaises(exceptions.BenchmarkAssertionError) as ctx:
             await worker_coordinator.execute_single(self.context_managed(runner), opensearch, params, on_error="abort")
@@ -1584,7 +1584,7 @@ class AsyncExecutorTests(TestCase):
         opensearch = None
         params = None
         runner = mock.Mock(side_effect=
-                           as_future(exception=elasticsearch.NotFoundError(404, "not found", "the requested document could not be found")))
+                           as_future(exception=opensearchpy.NotFoundError(404, "not found", "the requested document could not be found")))
 
         ops, unit, request_meta_data = await worker_coordinator.execute_single(
             self.context_managed(runner), opensearch, params, on_error="continue")
@@ -1603,7 +1603,7 @@ class AsyncExecutorTests(TestCase):
         opensearch = None
         params = None
         runner = mock.Mock(side_effect=
-                           as_future(exception=elasticsearch.NotFoundError(413, b"", b"")))
+                           as_future(exception=opensearchpy.NotFoundError(413, b"", b"")))
 
         ops, unit, request_meta_data = await worker_coordinator.execute_single(
             self.context_managed(runner), opensearch, params, on_error="continue")

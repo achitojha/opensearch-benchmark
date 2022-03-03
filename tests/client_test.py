@@ -30,7 +30,7 @@ import ssl
 from copy import deepcopy
 from unittest import TestCase, mock
 
-import elasticsearch
+import opensearchpy
 import pytest
 import urllib3.exceptions
 
@@ -330,10 +330,10 @@ class RestLayerTests(TestCase):
     @mock.patch("elasticsearch.Elasticsearch")
     def test_retries_on_transport_errors(self, opensearch, sleep):
         opensearch.cluster.health.side_effect = [
-            elasticsearch.TransportError(503, "Service Unavailable"),
-            elasticsearch.TransportError(401, "Unauthorized"),
-            elasticsearch.TransportError(408, "Timed Out"),
-            elasticsearch.TransportError(408, "Timed Out"),
+            opensearchpy.TransportError(503, "Service Unavailable"),
+            opensearchpy.TransportError(401, "Unauthorized"),
+            opensearchpy.TransportError(408, "Timed Out"),
+            opensearchpy.TransportError(408, "Timed Out"),
             {
                 "version": {
                     "number": "5.0.0",
@@ -347,12 +347,12 @@ class RestLayerTests(TestCase):
     @mock.patch("time.sleep")
     @mock.patch("elasticsearch.Elasticsearch")
     def test_dont_retry_eternally_on_transport_errors(self, opensearch, sleep):
-        opensearch.cluster.health.side_effect = elasticsearch.TransportError(401, "Unauthorized")
+        opensearch.cluster.health.side_effect = opensearchpy.TransportError(401, "Unauthorized")
         self.assertFalse(client.wait_for_rest_layer(opensearch, max_attempts=3))
 
     @mock.patch("elasticsearch.Elasticsearch")
     def test_ssl_error(self, opensearch):
-        opensearch.cluster.health.side_effect = elasticsearch.ConnectionError("N/A",
+        opensearch.cluster.health.side_effect = opensearchpy.ConnectionError("N/A",
                                                             "[SSL: UNKNOWN_PROTOCOL] unknown protocol (_ssl.c:719)",
                                                             urllib3.exceptions.SSLError(
                                                                 "[SSL: UNKNOWN_PROTOCOL] unknown protocol (_ssl.c:719)"))

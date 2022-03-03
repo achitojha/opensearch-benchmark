@@ -29,7 +29,7 @@ import random
 import unittest.mock as mock
 from unittest import TestCase
 
-import elasticsearch
+import opensearchpy
 import pytest
 
 from osbenchmark import client, exceptions
@@ -1132,7 +1132,7 @@ class ForceMergeRunnerTests(TestCase):
     @mock.patch("elasticsearch.Elasticsearch")
     @run_async
     async def test_force_merge_with_polling(self, opensearch):
-        opensearch.indices.forcemerge.return_value = as_future(exception=elasticsearch.ConnectionTimeout())
+        opensearch.indices.forcemerge.return_value = as_future(exception=opensearchpy.ConnectionTimeout())
         opensearch.tasks.list.side_effect = [
             as_future({
                 "nodes": {
@@ -1182,7 +1182,7 @@ class ForceMergeRunnerTests(TestCase):
     @mock.patch("elasticsearch.Elasticsearch")
     @run_async
     async def test_force_merge_with_polling_and_params(self, opensearch):
-        opensearch.indices.forcemerge.return_value = as_future(exception=elasticsearch.ConnectionTimeout())
+        opensearch.indices.forcemerge.return_value = as_future(exception=opensearchpy.ConnectionTimeout())
         opensearch.tasks.list.side_effect = [
             as_future({
                 "nodes": {
@@ -2044,7 +2044,7 @@ class QueryRunnerTests(TestCase):
         }
 
         opensearch.transport.perform_request.return_value = as_future(io.StringIO(json.dumps(search_response)))
-        opensearch.clear_scroll.return_value = as_future(exception=elasticsearch.ConnectionTimeout())
+        opensearch.clear_scroll.return_value = as_future(exception=opensearchpy.ConnectionTimeout())
 
         query_runner = runner.Query()
 
